@@ -1,6 +1,6 @@
 /* cover.css */
 .cover-container {
-  max-width: 42em;
+  max-width: 90vw;
 }
 
 html,
@@ -14,11 +14,14 @@ body,
   font-weight: 700;
   color: rgba(255, 255, 255, 0.5);
   background-color: transparent;
+}
+
+.nav-masthead .nav-link-underline {
   border-bottom: 0.25rem solid transparent;
 }
 
-.nav-masthead .nav-link:hover,
-.nav-masthead .nav-link:focus {
+.nav-masthead .nav-link-underline:hover,
+.nav-masthead .nav-link-underline:focus {
   border-bottom-color: rgba(255, 255, 255, 0.25);
 }
 
@@ -29,6 +32,22 @@ body,
 .nav-masthead .active {
   color: #fff;
   border-bottom-color: #fff;
+}
+
+.profile-picture {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-left: 10px; /* Optional: Add margin to separate from text links */
+}
+
+.profile-icon {
+  cursor: pointer;
+}
+
+.d-flex.align-items-center img {
+  vertical-align: middle;
 }
 
 .copy-message {
@@ -48,4 +67,12 @@ body,
 .copy-message.show {
   bottom: 20px;
   opacity: 1;
+}
+
+.fade-in {
+  animation: fadeIn 1s;
+}
+
+.fade-out {
+  animation: fadeOut 1s;
 }

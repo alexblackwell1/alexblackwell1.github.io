@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
+import Header from "../components/Header";
 import "./../css/cover.css";
 
 const Home: React.FC = () => {
@@ -32,22 +33,14 @@ const Home: React.FC = () => {
   return (
     <div className="d-flex h-100 text-center text-white bg-dark">
       <div className="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-        <header className="mb-auto">
-          <div>
-            <h3 className="float-md-start mb-0">Cover</h3>
-            <nav className="nav nav-masthead justify-content-center float-md-end">
-              <Link className="nav-link active" aria-current="page" to="/">
-                Home
-              </Link>
-              <Link className="nav-link" to="/about">
-                About
-              </Link>
-              <a className="nav-link" href="#contact">
-                Contact
-              </a>
-            </nav>
-          </div>
-        </header>
+        <Header
+          title="Cover"
+          currentPage="/"
+          links={[
+            { to: "/", label: "Home" },
+            { to: "/about", label: "About" },
+          ]}
+        />
 
         <main className="px-3">
           <h1>Welcome Friend!</h1>
