@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "animate.css";
 
@@ -23,6 +22,8 @@ const Section: React.FC<SectionProps> = ({ title, items, isEven }) => {
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const currentSectionRef = sectionRef.current;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsVisible(entry.isIntersecting);
@@ -30,13 +31,13 @@ const Section: React.FC<SectionProps> = ({ title, items, isEven }) => {
       { threshold: 0.1 }
     );
 
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+    if (currentSectionRef) {
+      observer.observe(currentSectionRef);
     }
 
     return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
+      if (currentSectionRef) {
+        observer.unobserve(currentSectionRef);
       }
     };
   }, []);

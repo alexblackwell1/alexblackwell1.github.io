@@ -36,7 +36,7 @@ const Wishlists: React.FC = () => {
       }
     };
     fetchWishlists();
-  }, [user]);
+  }, [user, itemsCollection]);
 
   const handleCreateWishlist = async () => {
     if (user && newWishlistName) {

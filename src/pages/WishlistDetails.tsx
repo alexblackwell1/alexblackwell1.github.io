@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
-import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
+import { useState, useEffect, useContext } from "react";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { useParams } from "react-router-dom";
 import { db } from "../firebase";
 import Header from "../components/Header";
