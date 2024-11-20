@@ -66,24 +66,6 @@ const Section: React.FC<SectionProps> = ({ title, items, isEven }) => {
     </div>
   );
 };
-// const Section: React.FC<SectionProps> = ({ title, items, isEven }) => (
-//   <div className={`mb-5 ${isEven ? "text-start" : "text-end"}`}>
-//     <div
-//       className="bg-secondary bg-opacity-25 p-4 rounded d-inline-block text-start"
-//       style={{ width: "80em", maxWidth: "80%" }}
-//     >
-//       <h2 className="mb-4 text-center">{title}</h2>
-//       {items.map((item, index) => (
-//         <div key={index} className="mb-3">
-//           <h3 className="h5">{item.title}</h3>
-//           {item.date && <p className="text-info mb-0">{item.date}</p>}
-//           <p>{item.description}</p>
-//           {index < items.length - 1 && <br />}
-//         </div>
-//       ))}
-//     </div>
-//   </div>
-// );
 
 const About: React.FC = () => {
   const sections = [
@@ -156,6 +138,7 @@ const About: React.FC = () => {
           links={[
             { to: "/", label: "Home" },
             { to: "/about", label: "About" },
+            { to: "/wishlists", label: "Wishlists" },
           ]}
         />
 
