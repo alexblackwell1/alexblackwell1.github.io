@@ -93,13 +93,24 @@ body,
   display: flex;
   gap: 10px;
 }
+
 .wishlist-item-icon {
   cursor: pointer;
   color: #ddd;
 }
+
+.wishlist-item-icon-edit-delete {
+  display: none;
+}
+
 .wishlist-item-icon:hover {
   color: #fff;
 }
+
+.wishlist-item:hover .wishlist-item-icon-edit-delete {
+  display: block;
+}
+
 .wishlist-input-container {
   display: flex;
   justify-content: center;

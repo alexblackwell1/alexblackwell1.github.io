@@ -18,6 +18,7 @@ import {
   faEdit,
   faSave,
   faCancel,
+  faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 interface Wishlist {
   id: string;
@@ -30,6 +31,9 @@ const Wishlists: React.FC = () => {
   const [newWishlistName, setNewWishlistName] = useState("");
   const [editWishlistId, setEditWishlistId] = useState<string | null>(null);
   const [editWishlistName, setEditWishlistName] = useState<string>("");
+  const [confirmDeleteWishlistId, setConfirmDeleteWishlistId] = useState<
+    string | null
+  >(null);
   const navigate = useNavigate();
   const itemsCollection = collection(db, "WishLists");
   useEffect(() => {
@@ -63,12 +67,20 @@ const Wishlists: React.FC = () => {
     setNewWishlistName("");
     navigate(0);
   };
-  const handleDeleteWishlist = async (id: string) => {
+  const handleDeleteWishlist = (id: string) => {
+    setConfirmDeleteWishlistId(id);
+  };
+  const handleConfirmDelete = async (id: string) => {
     if (user) {
       await deleteDoc(doc(db, "WishLists", id));
       navigate(0);
     }
+    setConfirmDeleteWishlistId(null);
   };
+  const handleCancelDelete = () => {
+    setConfirmDeleteWishlistId(null);
+  };
+
   const handleEditWishlist = (id: string, name: string) => {
     setEditWishlistId(id);
     setEditWishlistName(name);
@@ -142,29 +154,52 @@ const Wishlists: React.FC = () => {
                     <>
                       <FontAwesomeIcon
                         icon={faSave}
+                        title="Save"
                         className="wishlist-item-icon save-icon"
                         onClick={() => handleSaveEditWishlist(wishlist.id)}
                       />
                       <FontAwesomeIcon
-                        icon={faCancel}
+                        icon={faTimes}
+                        title="Cancel"
                         className="wishlist-item-icon cancel-icon"
                         onClick={() => handleEditWishlist("", "")}
                       />
                     </>
                   ) : (
                     <>
-                      <FontAwesomeIcon
-                        icon={faEdit}
-                        className="wishlist-item-icon edit-icon"
-                        onClick={() =>
-                          handleEditWishlist(wishlist.id, wishlist.name)
-                        }
-                      />
-                      <FontAwesomeIcon
-                        icon={faTrashAlt}
-                        className="wishlist-item-icon delete-icon"
-                        onClick={() => handleDeleteWishlist(wishlist.id)}
-                      />
+                      {confirmDeleteWishlistId === wishlist.id ? (
+                        <>
+                          <FontAwesomeIcon
+                            icon={faTrashAlt}
+                            title="Confirm"
+                            className="wishlist-item-icon check-icon"
+                            onClick={() => handleConfirmDelete(wishlist.id)}
+                          />
+                          <FontAwesomeIcon
+                            icon={faTimes}
+                            title="Cancel"
+                            className="wishlist-item-icon cancel-icon"
+                            onClick={handleCancelDelete}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <FontAwesomeIcon
+                            icon={faEdit}
+                            title="Rename"
+                            className="wishlist-item-icon-edit-delete edit-icon"
+                            onClick={() =>
+                              handleEditWishlist(wishlist.id, wishlist.name)
+                            }
+                          />
+                          <FontAwesomeIcon
+                            icon={faTrashAlt}
+                            title="Delete"
+                            className="wishlist-item-icon-edit-delete delete-icon"
+                            onClick={() => handleDeleteWishlist(wishlist.id)}
+                          />
+                        </>
+                      )}
                     </>
                   )}
                 </div>
