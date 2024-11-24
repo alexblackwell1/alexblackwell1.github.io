@@ -17,14 +17,15 @@ import {
   faTrashAlt,
   faEdit,
   faSave,
-  faCancel,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
+
 interface Wishlist {
   id: string;
   name: string;
   createdBy: string;
 }
+
 const Wishlists: React.FC = () => {
   const { user, signin } = useContext(AuthContext);
   const [wishlists, setWishlists] = useState<Wishlist[]>([]);
@@ -36,6 +37,7 @@ const Wishlists: React.FC = () => {
   >(null);
   const navigate = useNavigate();
   const itemsCollection = collection(db, "WishLists");
+
   useEffect(() => {
     const fetchWishlists = async () => {
       if (user) {
@@ -50,6 +52,7 @@ const Wishlists: React.FC = () => {
     };
     fetchWishlists();
   }, [user, itemsCollection]);
+
   const handleCreateWishlist = async (
     e: React.KeyboardEvent | React.MouseEvent
   ) => {
@@ -59,24 +62,51 @@ const Wishlists: React.FC = () => {
       !newWishlistName
     )
       return;
-    const newWishlistRef = doc(db, "WishLists", newWishlistName);
+
+    // Check if a wishlist with the same name exists for the same user
+    const querySnapshot = await getDocs(collection(db, "WishLists"));
+    const existingWishlist = querySnapshot.docs.find(
+      (doc) =>
+        doc.data().name === newWishlistName && doc.data().createdBy === user.uid
+    );
+
+    if (existingWishlist) {
+      alert(
+        "You already have a wishlist with this name. Please choose a unique name."
+      );
+      return;
+    }
+
+    // Create new wishlist
+    const newWishlistRef = doc(collection(db, "WishLists"));
     await setDoc(newWishlistRef, {
       name: newWishlistName,
       createdBy: user.uid,
     });
+    const newWishlist = {
+      id: newWishlistRef.id,
+      name: newWishlistName,
+      createdBy: user.uid,
+    };
+    setWishlists((prevWishlists) => [...prevWishlists, newWishlist]);
     setNewWishlistName("");
-    navigate(0);
+    navigate(`/wishlists/${newWishlistRef.id}`);
   };
+
   const handleDeleteWishlist = (id: string) => {
     setConfirmDeleteWishlistId(id);
   };
+
   const handleConfirmDelete = async (id: string) => {
     if (user) {
       await deleteDoc(doc(db, "WishLists", id));
-      navigate(0);
+      setWishlists((prevWishlists) =>
+        prevWishlists.filter((wishlist) => wishlist.id !== id)
+      );
+      setConfirmDeleteWishlistId(null);
     }
-    setConfirmDeleteWishlistId(null);
   };
+
   const handleCancelDelete = () => {
     setConfirmDeleteWishlistId(null);
   };
@@ -85,15 +115,40 @@ const Wishlists: React.FC = () => {
     setEditWishlistId(id);
     setEditWishlistName(name);
   };
+
   const handleSaveEditWishlist = async (id: string) => {
     if (user && editWishlistName) {
+      // Check if a wishlist with the same name exists for the same user
+      const querySnapshot = await getDocs(collection(db, "WishLists"));
+      const existingWishlist = querySnapshot.docs.find(
+        (doc) =>
+          doc.data().name === editWishlistName &&
+          doc.data().createdBy === user.uid &&
+          doc.id !== id
+      );
+
+      if (existingWishlist) {
+        alert(
+          "You already have a wishlist with this name. Please choose a unique name."
+        );
+        return;
+      }
+
+      // Update wishlist
       const wishlistRef = doc(db, "WishLists", id);
       await updateDoc(wishlistRef, { name: editWishlistName });
+      setWishlists((prevWishlists) =>
+        prevWishlists.map((wishlist) =>
+          wishlist.id === id
+            ? { ...wishlist, name: editWishlistName }
+            : wishlist
+        )
+      );
       setEditWishlistId(null);
       setEditWishlistName("");
-      navigate(0);
     }
   };
+
   if (!user) {
     return (
       <div className="d-flex h-100 text-center text-white bg-dark">
@@ -104,13 +159,15 @@ const Wishlists: React.FC = () => {
             links={[{ to: "/wishlists", label: "Wishlists" }]}
           />
           <main className="px-3">
-            <h1>Wishlists</h1> <p>Please sign in to view your wishlists.</p>
+            <h1>Wishlists</h1>
+            <p>Please sign in to view your wishlists.</p>
             <button onClick={signin}>Sign In</button>
           </main>
         </div>
       </div>
     );
   }
+
   return (
     <div className="d-flex h-100 text-center text-white bg-dark">
       <div className="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
@@ -222,4 +279,5 @@ const Wishlists: React.FC = () => {
     </div>
   );
 };
+
 export default Wishlists;
