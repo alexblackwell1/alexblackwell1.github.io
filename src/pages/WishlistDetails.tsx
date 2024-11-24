@@ -20,17 +20,27 @@ const WishlistDetails = () => {
   const wishlistRef = id ? doc(db, "WishLists", id) : null;
 
   useEffect(() => {
-    if (!id || !wishlistRef) return;
+    if (!id || !wishlistRef || !user) return;
 
     const fetchWishlist = async () => {
       const docSnap = await getDoc(wishlistRef);
       if (docSnap.exists()) {
         setWishlist(docSnap.data());
         setItems(docSnap.data().items || []);
+
+        // Check if the signed-in user is already in the sharedWith list
+        const sharedWith = docSnap.data().sharedWith || [];
+        if (
+          !sharedWith.includes(user.uid) &&
+          docSnap.data().createdBy !== user.uid
+        ) {
+          sharedWith.push(user.uid);
+          await updateDoc(wishlistRef, { sharedWith });
+        }
       }
     };
     fetchWishlist();
-  }, [id, wishlistRef]);
+  }, [id, wishlistRef, user]);
 
   const handleAddItem = async () => {
     if (newItemName && wishlistRef) {
